@@ -2,6 +2,8 @@
 *.so
 obj/
 libs/
+build/
+.idea/
 ndkpath.txt
 *.qmod
 QPM/

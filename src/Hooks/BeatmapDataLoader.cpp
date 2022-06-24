@@ -10,6 +10,7 @@
 #include "GlobalNamespace/BeatmapDataLoader.hpp"
 
 #include "System/Linq/Enumerable.hpp"
+#include "GlobalNamespace/BeatmapDifficulty.hpp"
 
 using namespace GlobalNamespace;
 using namespace TracksAD;
@@ -116,15 +117,18 @@ void TracksAD::readBeatmapDataAD(CustomJSONData::CustomBeatmapData *beatmapData)
 }
 
 MAKE_HOOK_MATCH(GetBeatmapDataFromBeatmapSaveData,
-                &BeatmapDataLoader::GetBeatmapDataFromBeatmapSaveData, BeatmapData *, BeatmapSaveDataVersion3::BeatmapSaveData* beatmapSaveData,
+                &BeatmapDataLoader::GetBeatmapDataFromBeatmapSaveData,
+                BeatmapData *, ::BeatmapSaveDataVersion3::BeatmapSaveData* beatmapSaveData,
+                ::GlobalNamespace::BeatmapDifficulty beatmapDifficulty,
                 float startBpm, bool loadingForDesignatedEnvironment,
                 ::GlobalNamespace::EnvironmentKeywords* environmentKeywords,
                 ::GlobalNamespace::EnvironmentLightGroups* environmentLightGroups,
-                ::GlobalNamespace::DefaultEnvironmentEvents* defaultEnvironmentEvents) {
+                ::GlobalNamespace::DefaultEnvironmentEvents* defaultEnvironmentEvents,
+                ::GlobalNamespace::PlayerSpecificSettings* playerSpecificSettings) {
     auto *result =
         reinterpret_cast<CustomJSONData::CustomBeatmapData *>(GetBeatmapDataFromBeatmapSaveData(
-                beatmapSaveData, startBpm, loadingForDesignatedEnvironment, environmentKeywords,
-            environmentLightGroups, defaultEnvironmentEvents));
+                beatmapSaveData, beatmapDifficulty, startBpm, loadingForDesignatedEnvironment, environmentKeywords,
+            environmentLightGroups, defaultEnvironmentEvents, playerSpecificSettings));
     
     TracksAD::readBeatmapDataAD(result);
 
